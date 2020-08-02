@@ -130,6 +130,41 @@ AFRAME.registerComponent("player-info", {
       nametagEl.setAttribute("text", { value: this.displayName });
       nametagEl.object3D.visible = !infoShouldBeHidden;
     }
+    const troleEl = this.el.querySelector(".trole"); //Always visible
+    //if (troleEl && this.displayName == "TEST") {
+    if (troleEl) {
+      if (!this.identityName || this.identityName == "undefined") {
+        troleEl.setAttribute("text", {
+          value: "Unauthorized Visitor"
+        });
+      }
+      if (this.identityName.includes("student")) {
+        troleEl.setAttribute("text", {
+          value: "Student"
+        });
+      } else if (this.identityName.includes("teacher")) {
+        troleEl.setAttribute("text", {
+          value: "Teacher"
+        });
+      } else if (this.identityName.includes("principal")) {
+        troleEl.setAttribute("text", {
+          value: "Principal"
+        });
+      } else if (this.displayName.includes("student")) {
+        troleEl.setAttribute("text", {
+          value: "DISP_STUDENT_INC"
+        });
+      } else if (this.displayName == "student") {
+        troleEl.setAttribute("text", {
+          value: "DISP_STUDENT_EQU"
+        });
+      } else {
+        troleEl.setAttribute("text", {
+          value: "Visitor"
+        });
+      }
+      troleEl.object3D.visible = true;
+    }
     const identityNameEl = this.el.querySelector(".identityName");
     if (identityNameEl) {
       if (this.identityName) {
