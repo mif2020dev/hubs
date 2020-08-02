@@ -27,6 +27,8 @@
 </head>
 
 <body>
+    <div id="support-root"></div>
+
     <a-scene
         loading-screen="enabled: false"
         hubs-systems
@@ -116,6 +118,12 @@
                                     scale="6 6 6"
                                 ></a-entity>
                                 <a-entity
+                                    billboard class="trole"
+                                    text="side: double; align: center; color: #ADD8E6"
+                                    position="0 1.2 0"
+                                    scale="4 4 4">
+                                </a-entity>
+                                <a-entity
                                     billboard
                                     class="identityName"
                                     text="side: double; align: center; color: #ddd"
@@ -197,11 +205,11 @@
                         </template>
 
                         <template data-name="LeftHand">
-                            <a-entity personal-space-invader="radius: 0.1" bone-visibility></a-entity>
+                            <a-entity personal-space-invader="radius: 0.1" bone-visibility="updateWhileInvisible: true;"></a-entity>
                         </template>
 
                         <template data-name="RightHand">
-                            <a-entity personal-space-invader="radius: 0.1" bone-visibility></a-entity>
+                            <a-entity personal-space-invader="radius: 0.1" bone-visibility="updateWhileInvisible: true;"></a-entity>
                         </template>
                     </a-entity>
                 </a-entity>
@@ -1223,11 +1231,11 @@
                 </template>
 
                 <template data-name="LeftHand">
-                    <a-entity bone-visibility hover-visuals="hand: left;"></a-entity>
+                    <a-entity bone-visibility="updateWhileInvisible: true;" hover-visuals="hand: left;"></a-entity>
                 </template>
 
                 <template data-name="RightHand">
-                    <a-entity bone-visibility hover-visuals="hand: right;"></a-entity>
+                    <a-entity bone-visibility="updateWhileInvisible: true;" hover-visuals="hand: right;"></a-entity>
                 </template>
 
             </a-entity>
