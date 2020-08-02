@@ -122,7 +122,7 @@ function createDefaultAppConfig() {
     // Enable all features with a boolean type
     if (categoryName === "features") {
       for (const [key, schema] of Object.entries(category)) {
-        if (key === "require_account_for_join" || key === "disable_room_creation") {
+        if (key === "require_account_for_join") {
           appConfig[categoryName][key] = false;
         } else {
           appConfig[categoryName][key] = schema.type === "boolean" ? true : null;
@@ -226,14 +226,13 @@ module.exports = async (env, argv) => {
 
   const host = process.env.HOST_IP || env.localDev || env.remoteDev ? "hubs.local" : "localhost";
 
-  const legacyBabelConfig = {
-    presets: ["@babel/react", ["@babel/env", { targets: { ie: 11 } }]],
-    plugins: [
-      "@babel/proposal-class-properties",
-      "@babel/proposal-object-rest-spread",
-      "@babel/plugin-transform-async-to-generator"
-    ]
-  };
+  // Remove comments from .babelrc
+  const babelConfig = JSON.parse(
+    fs
+      .readFileSync(path.resolve(__dirname, ".babelrc"))
+      .toString()
+      .replace(/\/\/.+/g, "")
+  );
 
   return {
     node: {
@@ -243,7 +242,6 @@ module.exports = async (env, argv) => {
       fs: "empty"
     },
     entry: {
-      support: path.join(__dirname, "src", "support.js"),
       index: path.join(__dirname, "src", "index.js"),
       hub: path.join(__dirname, "src", "hub.js"),
       scene: path.join(__dirname, "src", "scene.js"),
@@ -251,8 +249,6 @@ module.exports = async (env, argv) => {
       link: path.join(__dirname, "src", "link.js"),
       discord: path.join(__dirname, "src", "discord.js"),
       cloud: path.join(__dirname, "src", "cloud.js"),
-      signin: path.join(__dirname, "src", "signin.js"),
-      verify: path.join(__dirname, "src", "verify.js"),
       "whats-new": path.join(__dirname, "src", "whats-new.js")
     },
     output: {
@@ -270,15 +266,6 @@ module.exports = async (env, argv) => {
         "Access-Control-Allow-Origin": "*"
       },
       inline: !env.bundleAnalyzer,
-      historyApiFallback: {
-        rewrites: [
-          { from: /^\/signin/, to: "/signin.html" },
-          { from: /^\/discord/, to: "/discord.html" },
-          { from: /^\/cloud/, to: "/cloud.html" },
-          { from: /^\/verify/, to: "/verify.html" },
-          { from: /^\/whats-new/, to: "/whats-new.html" }
-        ]
-      },
       before: function(app) {
         // Local CORS proxy
         app.all("/cors-proxy/*", (req, res) => {
@@ -350,13 +337,11 @@ module.exports = async (env, argv) => {
           }
         },
         {
-          test: [
-            path.resolve(__dirname, "src", "utils", "configs.js"),
-            path.resolve(__dirname, "src", "utils", "i18n.js"),
-            path.resolve(__dirname, "src", "support.js")
-          ],
+          // We reference the sources of some libraries directly, and they use async/await,
+          // so we have to run it through babel in order to support the Samsung browser on Oculus Go.
+          test: [path.resolve(__dirname, "node_modules/naf-janus-adapter")],
           loader: "babel-loader",
-          options: legacyBabelConfig
+          options: babelConfig
         },
         {
           test: /\.js$/,
@@ -469,8 +454,7 @@ module.exports = async (env, argv) => {
       new HTMLWebpackPlugin({
         filename: "index.html",
         template: path.join(__dirname, "src", "index.html"),
-        chunks: ["support", "index"],
-        chunksSortMode: "manual",
+        chunks: ["index"],
         minify: {
           removeComments: false
         }
@@ -478,8 +462,7 @@ module.exports = async (env, argv) => {
       new HTMLWebpackPlugin({
         filename: "hub.html",
         template: path.join(__dirname, "src", "hub.html"),
-        chunks: ["support", "hub"],
-        chunksSortMode: "manual",
+        chunks: ["hub"],
         inject: "head",
         minify: {
           removeComments: false
@@ -488,8 +471,7 @@ module.exports = async (env, argv) => {
       new HTMLWebpackPlugin({
         filename: "scene.html",
         template: path.join(__dirname, "src", "scene.html"),
-        chunks: ["support", "scene"],
-        chunksSortMode: "manual",
+        chunks: ["scene"],
         inject: "head",
         minify: {
           removeComments: false
@@ -498,8 +480,7 @@ module.exports = async (env, argv) => {
       new HTMLWebpackPlugin({
         filename: "avatar.html",
         template: path.join(__dirname, "src", "avatar.html"),
-        chunks: ["support", "avatar"],
-        chunksSortMode: "manual",
+        chunks: ["avatar"],
         inject: "head",
         minify: {
           removeComments: false
@@ -508,8 +489,7 @@ module.exports = async (env, argv) => {
       new HTMLWebpackPlugin({
         filename: "link.html",
         template: path.join(__dirname, "src", "link.html"),
-        chunks: ["support", "link"],
-        chunksSortMode: "manual",
+        chunks: ["link"],
         minify: {
           removeComments: false
         }
@@ -536,22 +516,6 @@ module.exports = async (env, argv) => {
         template: path.join(__dirname, "src", "cloud.html"),
         chunks: ["cloud"],
         inject: "head",
-        minify: {
-          removeComments: false
-        }
-      }),
-      new HTMLWebpackPlugin({
-        filename: "signin.html",
-        template: path.join(__dirname, "src", "signin.html"),
-        chunks: ["signin"],
-        minify: {
-          removeComments: false
-        }
-      }),
-      new HTMLWebpackPlugin({
-        filename: "verify.html",
-        template: path.join(__dirname, "src", "verify.html"),
-        chunks: ["verify"],
         minify: {
           removeComments: false
         }

@@ -5,7 +5,6 @@ import { addSetsToBindings } from "./utils";
 
 const zero = "/vars/touchscreen/zero";
 const forward = "/vars/touchscreen/pinchDeltaForward";
-const touchCamDeltaMaybeInverted = "vars/touchscreen/touchCameraDeltaMaybeInverted";
 const touchCamDelta = "vars/touchscreen/touchCameraDelta";
 const touchCamDeltaX = "vars/touchscreen/touchCameraDelta/x";
 const touchCamDeltaY = "vars/touchscreen/touchCameraDelta/y";
@@ -56,22 +55,17 @@ export const touchscreenUserBindings = addSetsToBindings({
     {
       src: { value: touchCamDeltaX },
       dest: { value: touchCamDeltaXScaled },
-      xform: xforms.scale(-Math.PI)
+      xform: xforms.scale(Math.PI)
     },
     {
       src: { value: touchCamDeltaY },
       dest: { value: touchCamDeltaYScaled },
-      xform: xforms.scale(-Math.PI / 2)
+      xform: xforms.scale(Math.PI / 2)
     },
     {
       src: { x: touchCamDeltaXScaled, y: touchCamDeltaYScaled },
       dest: { value: touchCamDelta },
       xform: xforms.compose_vec2
-    },
-    {
-      src: { value: touchCamDelta },
-      dest: { value: touchCamDeltaMaybeInverted },
-      xform: xforms.invert_vec2_if_preference("invertTouchscreenCameraMove")
     },
     {
       src: { value: paths.device.gyro.averageDeltaX },
@@ -90,14 +84,14 @@ export const touchscreenUserBindings = addSetsToBindings({
     },
     {
       src: {
-        first: touchCamDeltaMaybeInverted,
+        first: touchCamDelta,
         second: gyroCamDelta
       },
       dest: { value: paths.actions.cameraDelta },
       xform: xforms.add_vec2
     },
     {
-      src: { value: touchCamDeltaMaybeInverted },
+      src: { value: touchCamDelta },
       dest: { value: paths.actions.lobbyCameraDelta },
       xform: xforms.copy
     },

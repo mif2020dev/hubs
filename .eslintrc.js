@@ -10,7 +10,7 @@ module.exports = {
     AFRAME: true,
     NAF: true
   },
-  plugins: ["prettier", "react", "react-hooks"],
+  plugins: ["prettier", "react"],
   rules: {
     "prettier/prettier": "error",
     "prefer-const": "error",
@@ -18,9 +18,7 @@ module.exports = {
     "no-var": "error",
     "no-throw-literal": "error",
     // Light console usage is useful but remove debug logs before merging to master.
-    "no-console": "off",
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "no-console": "off"
   },
   extends: ["prettier", "plugin:react/recommended", "eslint:recommended"]
 };

@@ -46,10 +46,9 @@ export default class DialogAdapter {
     this._initialAudioConsumerPromise = null;
     this._initialAudioConsumerResolvers = new Map();
     this._serverTimeRequests = 0;
-    this._avgTimeOffset = 0;
     this._blockedClients = new Map();
     this.type = "dialog";
-    this.occupants = {}; // This is a public field
+    this.occupants = []; // This is a public field
   }
 
   setForceTcp(forceTcp) {
@@ -179,11 +178,7 @@ export default class DialogAdapter {
         case "newPeer": {
           const peer = notification.data;
           this._onOccupantConnected(peer.id);
-          this.occupants[peer.id] = peer;
-
-          if (this._onOccupantsChanged) {
-            this._onOccupantsChanged(this.occupants);
-          }
+          this.occupants.push(peer.id);
 
           break;
         }
@@ -218,11 +213,7 @@ export default class DialogAdapter {
             this._initialAudioConsumerResolvers.delete(peerId);
           }
 
-          delete this.occupants[peerId];
-
-          if (this._onOccupantsChanged) {
-            this._onOccupantsChanged(this.occupants);
-          }
+          this.occupants = this.occupants.filter(id => id !== peerId);
 
           break;
         }
@@ -447,24 +438,19 @@ export default class DialogAdapter {
       });
 
       const audioConsumerPromises = [];
-      this.occupants = {};
+      this.occupants = [];
 
       // Create a promise that will be resolved once we attach to all the initial consumers.
       // This will gate the connection flow until all voices will be heard.
       for (let i = 0; i < peers.length; i++) {
         const peerId = peers[i].id;
-        this._onOccupantConnected(peerId);
-        this.occupants[peerId] = peers[i];
+        this.occupants.push(peerId);
         if (!peers[i].hasProducers) continue;
         audioConsumerPromises.push(new Promise(res => this._initialAudioConsumerResolvers.set(peerId, res)));
       }
 
       this._connectSuccess(this._clientId);
       this._initialAudioConsumerPromise = Promise.all(audioConsumerPromises);
-
-      if (this._onOccupantsChanged) {
-        this._onOccupantsChanged(this.occupants);
-      }
 
       if (this._localMediaStream) {
         this.createMissingProducers(this._localMediaStream);
@@ -578,18 +564,13 @@ export default class DialogAdapter {
 
     this._closed = true;
 
-    const occupantIds = Object.keys(this.occupants);
-    for (let i = 0; i < occupantIds.length; i++) {
-      const peerId = occupantIds[i];
+    for (let i = 0; i < this.occupants.length; i++) {
+      const peerId = this.occupants[i];
       if (peerId === this._clientId) continue;
       this._onOccupantDisconnected(peerId);
     }
 
-    this.occupants = {};
-
-    if (this._onOccupantsChanged) {
-      this._onOccupantsChanged(this.occupants);
-    }
+    this.occupants = [];
 
     debug("disconnect()");
 
@@ -688,10 +669,10 @@ export default class DialogAdapter {
       this._timeOffsets[this._serverTimeRequests % 10] = timeOffset;
     }
 
-    this._avgTimeOffset = this._timeOffsets.reduce((acc, offset) => (acc += offset), 0) / this._timeOffsets.length;
+    this.avgTimeOffset = this._timeOffsets.reduce((acc, offset) => (acc += offset), 0) / this._timeOffsets.length;
 
     if (this._serverTimeRequests > 10) {
-      debug(`new server time offset: ${this._avgTimeOffset}ms`);
+      debug(`new server time offset: ${this.avgTimeOffset}ms`);
       setTimeout(() => this.updateTimeOffset(), 5 * 60 * 1000); // Sync clock every 5 minutes.
     } else {
       this.updateTimeOffset();

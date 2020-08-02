@@ -40,11 +40,13 @@ import AvatarUrlDialog from "./avatar-url-dialog.js";
 import InviteDialog from "./invite-dialog.js";
 import InviteTeamDialog from "./invite-team-dialog.js";
 import LinkDialog from "./link-dialog.js";
+import InAppBrowserDialog from "./in-app-browser-dialog.js";
 import SignInDialog from "./sign-in-dialog.js";
 import RoomSettingsDialog from "./room-settings-dialog.js";
 import CloseRoomDialog from "./close-room-dialog.js";
 import Tip from "./tip.js";
 import WebRTCScreenshareUnsupportedDialog from "./webrtc-screenshare-unsupported-dialog.js";
+import WebAssemblyUnsupportedDialog from "./webassembly-unsupported-dialog.js";
 import WebVRRecommendDialog from "./webvr-recommend-dialog.js";
 import FeedbackDialog from "./feedback-dialog.js";
 import HelpDialog from "./help-dialog.js";
@@ -135,6 +137,7 @@ class UIRoot extends Component {
     environmentSceneLoaded: PropTypes.bool,
     entryDisallowed: PropTypes.bool,
     roomUnavailableReason: PropTypes.string,
+    platformUnsupportedReason: PropTypes.string,
     hubIsBound: PropTypes.bool,
     isSupportAvailable: PropTypes.bool,
     presenceLogEntries: PropTypes.array,
@@ -149,6 +152,8 @@ class UIRoot extends Component {
     signInContinueTextId: PropTypes.string,
     onContinueAfterSignIn: PropTypes.func,
     showSafariMicDialog: PropTypes.bool,
+    showInAppBrowserDialog: PropTypes.bool,
+    showWebAssemblyDialog: PropTypes.bool,
     showOAuthDialog: PropTypes.bool,
     onCloseOAuthDialog: PropTypes.func,
     oauthInfo: PropTypes.array,
@@ -218,6 +223,12 @@ class UIRoot extends Component {
   constructor(props) {
     super(props);
 
+    if (props.showInAppBrowserDialog) {
+      this.state.dialog = <InAppBrowserDialog closable={false} />;
+    }
+    if (props.showWebAssemblyDialog) {
+      this.state.dialog = <WebAssemblyUnsupportedDialog closable={false} />;
+    }
     if (props.showSafariMicDialog) {
       this.state.dialog = <SafariMicDialog closable={false} />;
     }
@@ -993,8 +1004,28 @@ class UIRoot extends Component {
           </IfFeature>
         </div>
       );
+    } else if (this.props.platformUnsupportedReason === "no_data_channels") {
+      // TODO i18n, due to links and markup
+      subtitle = (
+        <div>
+          Your browser does not support{" "}
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel#Browser_compatibility"
+            rel="noreferrer noopener"
+          >
+            WebRTC Data Channels
+          </a>
+          , which is required to use {messages["app-name"]}.
+          <br />
+          If you&quot;d like to use {messages["app-name"]} with Oculus or SteamVR, you can{" "}
+          <a href="https://www.mozilla.org/firefox" rel="noreferrer noopener">
+            Download Firefox
+          </a>
+          .
+        </div>
+      );
     } else {
-      const reason = this.props.roomUnavailableReason;
+      const reason = this.props.roomUnavailableReason || this.props.platformUnsupportedReason;
       const tcpUrl = new URL(document.location.toString());
       const tcpParams = new URLSearchParams(tcpUrl.search);
       tcpParams.set("force_tcp", true);
@@ -1437,11 +1468,14 @@ class UIRoot extends Component {
     };
     if (this.props.hide || this.state.hide) return <div className={classNames(rootStyles)} />;
 
-    const isExited = this.state.exited || this.props.roomUnavailableReason;
+    const isExited = this.state.exited || this.props.roomUnavailableReason || this.props.platformUnsupportedReason;
     const preload = this.props.showPreload;
 
     const isLoading =
-      !preload && (!this.state.hideLoader || !this.state.didConnectToNetworkedScene) && !this.props.showSafariMicDialog;
+      !preload &&
+      (!this.state.hideLoader || !this.state.didConnectToNetworkedScene) &&
+      !(this.props.showInAppBrowserDialog || this.props.showWebAssemblyDialog) &&
+      !this.props.showSafariMicDialog;
 
     const hasPush = navigator.serviceWorker && "PushManager" in window;
 
@@ -2058,7 +2092,6 @@ class UIRoot extends Component {
 
             {showPresenceList && (
               <PresenceList
-                hubChannel={this.props.hubChannel}
                 history={this.props.history}
                 presences={this.props.presences}
                 sessionId={this.props.sessionId}

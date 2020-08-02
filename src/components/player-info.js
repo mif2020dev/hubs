@@ -1,6 +1,7 @@
 import { injectCustomShaderChunks } from "../utils/media-utils";
 import { AVATAR_TYPES } from "../utils/avatar-utils";
-import { registerComponentInstance, deregisterComponentInstance } from "../utils/component-utils";
+import { registerComponentInstance } from "../utils/component-utils";
+import { deregisterComponentInstance } from "../utils/component-utils";
 
 function ensureAvatarNodes(json) {
   const { nodes } = json;
@@ -35,8 +36,7 @@ function ensureAvatarNodes(json) {
 AFRAME.registerComponent("player-info", {
   schema: {
     avatarSrc: { type: "string" },
-    avatarType: { type: "string", default: AVATAR_TYPES.SKINNABLE },
-    muted: { default: false }
+    avatarType: { type: "string", default: AVATAR_TYPES.SKINNABLE }
   },
   init() {
     this.displayName = null;
@@ -48,8 +48,6 @@ AFRAME.registerComponent("player-info", {
     this.applyDisplayName = this.applyDisplayName.bind(this);
     this.handleModelError = this.handleModelError.bind(this);
     this.update = this.update.bind(this);
-    this.localStateAdded = this.localStateAdded.bind(this);
-    this.localStateRemoved = this.localStateRemoved.bind(this);
 
     this.isLocalPlayerInfo = this.el.id === "avatar-rig";
     this.playerSessionId = null;
@@ -78,11 +76,6 @@ AFRAME.registerComponent("player-info", {
 
     this.el.sceneEl.addEventListener("stateadded", this.update);
     this.el.sceneEl.addEventListener("stateremoved", this.update);
-
-    if (this.isLocalPlayerInfo) {
-      this.el.sceneEl.addEventListener("stateadded", this.localStateAdded);
-      this.el.sceneEl.addEventListener("stateremoved", this.localStateRemoved);
-    }
   },
   pause() {
     this.el.removeEventListener("model-loaded", this.applyProperties);
@@ -93,11 +86,6 @@ AFRAME.registerComponent("player-info", {
     this.el.sceneEl.removeEventListener("stateadded", this.update);
     this.el.sceneEl.removeEventListener("stateremoved", this.update);
     window.APP.store.removeEventListener("statechanged", this.update);
-
-    if (this.isLocalPlayerInfo) {
-      this.el.sceneEl.removeEventListener("stateadded", this.localStateAdded);
-      this.el.sceneEl.removeEventListener("stateremoved", this.localStateRemoved);
-    }
   },
 
   update() {
@@ -129,41 +117,6 @@ AFRAME.registerComponent("player-info", {
     if (this.displayName && nametagEl) {
       nametagEl.setAttribute("text", { value: this.displayName });
       nametagEl.object3D.visible = !infoShouldBeHidden;
-    }
-    const troleEl = this.el.querySelector(".trole"); //Always visible
-    //if (troleEl && this.displayName == "TEST") {
-    if (troleEl) {
-      if (!this.identityName || this.identityName == "undefined") {
-        troleEl.setAttribute("text", {
-          value: "Unauthorized Visitor"
-        });
-      }
-      if (this.identityName.includes("student")) {
-        troleEl.setAttribute("text", {
-          value: "Student"
-        });
-      } else if (this.identityName.includes("teacher")) {
-        troleEl.setAttribute("text", {
-          value: "Teacher"
-        });
-      } else if (this.identityName.includes("principal")) {
-        troleEl.setAttribute("text", {
-          value: "Principal"
-        });
-      } else if (this.displayName.includes("student")) {
-        troleEl.setAttribute("text", {
-          value: "DISP_STUDENT_INC"
-        });
-      } else if (this.displayName == "student") {
-        troleEl.setAttribute("text", {
-          value: "DISP_STUDENT_EQU"
-        });
-      } else {
-        troleEl.setAttribute("text", {
-          value: "Visitor"
-        });
-      }
-      troleEl.object3D.visible = true;
     }
     const identityNameEl = this.el.querySelector(".identityName");
     if (identityNameEl) {
@@ -200,15 +153,5 @@ AFRAME.registerComponent("player-info", {
   },
   handleModelError() {
     window.APP.store.resetToRandomDefaultAvatar();
-  },
-  localStateAdded(e) {
-    if (e.detail === "muted") {
-      this.el.setAttribute("player-info", { muted: true });
-    }
-  },
-  localStateRemoved(e) {
-    if (e.detail === "muted") {
-      this.el.setAttribute("player-info", { muted: false });
-    }
   }
 });
