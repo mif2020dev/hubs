@@ -7,7 +7,6 @@ const button = paths.device.xbox.button;
 const axis = paths.device.xbox.axis;
 const scaledRightJoystickVertical = paths.device.xbox.v("scaledRightJoystickVertical");
 const scaledLeftJoystickCursorDelta = paths.device.xbox.v("scaledLeftJoystickCursorDelta");
-const scaledRightJoystickHorizontal = paths.device.xbox.v("scaledRightJoystickHorizontal");
 const deadzonedRightJoystickHorizontal = paths.device.xbox.v("deadzonedRightJoystickHorizontal");
 const deadzonedRightJoystickVertical = paths.device.xbox.v("deadzonedRightJoystickVertical");
 const deadzonedLeftJoystickHorizontal = paths.device.xbox.v("deadzonedLeftJoystickHorizontal");
@@ -98,8 +97,8 @@ export const xboxControllerUserBindings = addSetsToBindings({
     },
     {
       src: { value: deadzonedRightJoystickHorizontal },
-      dest: { value: scaledRightJoystickHorizontal },
-      xform: xforms.scale(-0.125) // horizontal look speed modifier
+      dest: { value: paths.actions.angularVelocity },
+      xform: xforms.scale(0.6) // horizontal look speed modifier
     },
     {
       src: { value: axis("rightJoystickVertical") },
@@ -118,7 +117,7 @@ export const xboxControllerUserBindings = addSetsToBindings({
     },
     {
       src: {
-        x: scaledRightJoystickHorizontal,
+        x: zero,
         y: scaledRightJoystickVertical
       },
       dest: { value: paths.actions.cameraDelta },

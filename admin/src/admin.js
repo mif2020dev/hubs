@@ -214,10 +214,7 @@ const HiddenAppBar = withStyles({
       display: "none"
     }
   }
-})(props => {
-  const { classes, ...other } = props;
-  return <AppBar {...other} className={classes.hideOnDesktop} />;
-});
+})(props => <AppBar {...props} className={props.classes.hideOnDesktop} />);
 
 document.addEventListener("DOMContentLoaded", async () => {
   const socket = await connectToReticulum();

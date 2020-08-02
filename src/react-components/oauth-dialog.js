@@ -71,8 +71,7 @@ export default class OAuthDialog extends Component {
                   className={classNames({
                     [styles.oauthButton]: true,
                     [styles.oauthTwitterButton]: info.type === "twitter",
-                    [styles.oauthDiscordButton]: info.type === "discord",
-                    [styles.oauthSlackButton]: info.type === "slack"
+                    [styles.oauthDiscordButton]: info.type === "discord"
                   })}
                 >
                   <FormattedMessage id={`oauth-dialog.sign-in.${info.type}`} />

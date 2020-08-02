@@ -2,7 +2,6 @@ import React from "react";
 import { AvatarLink, OwnedFileImage, ConditionalReferenceField } from "./fields";
 import { ApproveAvatarButton } from "./approve-buttons";
 import { DenyAvatarButton } from "./deny-buttons";
-import { ToolbarWithoutDelete } from "./toolbar-without-delete";
 
 import {
   List,
@@ -35,7 +34,7 @@ const AvatarFilter = props => (
 
 export const AvatarEdit = props => (
   <Edit {...props}>
-    <SimpleForm toolbar={<ToolbarWithoutDelete />}>
+    <SimpleForm>
       <TextInput source="name" />
       <TextInput source="description" />
       <TextInput source="attributions" />

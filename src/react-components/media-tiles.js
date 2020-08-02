@@ -32,7 +32,6 @@ const PUBLISHER_FOR_ENTRY_TYPE = {
   twitch_stream: "Twitch"
 };
 
-// TODO: Migrate to use MediaGrid and media specific components like RoomTile
 class MediaTiles extends Component {
   static propTypes = {
     intl: PropTypes.object,

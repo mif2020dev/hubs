@@ -21,8 +21,7 @@ body {
   @extend %unselectable;
 
   :local(.logo) {
-    max-width: 150px;
-    max-height: 64px;
+    width: 150px;
     margin-bottom: 22px;
     filter: drop-shadow(0 0 4px #888);
 

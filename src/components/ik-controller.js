@@ -53,17 +53,6 @@ const HAND_ROTATIONS = {
   right: new Matrix4().makeRotationFromEuler(new Euler(-Math.PI / 2, -Math.PI / 2, 0))
 };
 
-const angleOnXZPlaneBetweenMatrixRotations = (function() {
-  const XZ_PLANE_NORMAL = new THREE.Vector3(0, -1, 0);
-  const v1 = new THREE.Vector3();
-  const v2 = new THREE.Vector3();
-  return function angleOnXZPlaneBetweenMatrixRotations(matrixA, matrixB) {
-    v1.setFromMatrixColumn(matrixA, 2).projectOnPlane(XZ_PLANE_NORMAL);
-    v2.setFromMatrixColumn(matrixB, 2).projectOnPlane(XZ_PLANE_NORMAL);
-    return v1.angleTo(v2);
-  };
-})();
-
 /**
  * Performs IK on a hip-rooted skeleton to align the hip, head and hands with camera and controller inputs.
  * @namespace avatar
@@ -78,8 +67,7 @@ AFRAME.registerComponent("ik-controller", {
     leftHand: { type: "string", default: "LeftHand" },
     rightHand: { type: "string", default: "RightHand" },
     chest: { type: "string", default: "Spine" },
-    rotationSpeed: { default: 8 },
-    maxLerpAngle: { default: 90 * THREE.Math.DEG2RAD },
+    rotationSpeed: { default: 5 },
     alwaysUpdate: { type: "boolean", default: false }
   },
 
@@ -225,7 +213,6 @@ AFRAME.registerComponent("ik-controller", {
       // frustum culling errors since three.js does not take into account skinning when
       // computing frustum culling sphere bounds.
       avatar.position.setFromMatrixPosition(headTransform).add(invHipsToHeadVector);
-      avatar.matrixNeedsUpdate = true;
 
       // Animate the hip rotation to follow the Y rotation of the camera with some damping.
       cameraYRotation.setFromRotationMatrix(cameraForward, "YXZ");
@@ -234,21 +221,12 @@ AFRAME.registerComponent("ik-controller", {
       cameraYQuaternion.setFromEuler(cameraYRotation);
 
       if (this._hadFirstTick) {
-        camera.object3D.updateMatrices();
-        avatar.updateMatrices();
-        // Note: Camera faces down -Z, avatar faces down +Z
-        const yDelta = Math.PI - angleOnXZPlaneBetweenMatrixRotations(camera.object3D.matrixWorld, avatar.matrixWorld);
-
-        if (yDelta > this.data.maxLerpAngle) {
-          avatar.quaternion.copy(cameraYQuaternion);
-        } else {
-          Quaternion.slerp(
-            avatar.quaternion,
-            cameraYQuaternion,
-            avatar.quaternion,
-            (this.data.rotationSpeed * dt) / 1000
-          );
-        }
+        Quaternion.slerp(
+          avatar.quaternion,
+          cameraYQuaternion,
+          avatar.quaternion,
+          (this.data.rotationSpeed * dt) / 1000
+        );
       } else {
         avatar.quaternion.copy(cameraYQuaternion);
       }
@@ -279,7 +257,7 @@ AFRAME.registerComponent("ik-controller", {
     if (!this._hadFirstTick) {
       // Ensure the avatar is not shown until we've done our first IK step, to prevent seeing mis-oriented/t-pose pose or our own avatar at the wrong place.
       this.ikRoot.el.object3D.visible = true;
-      this._hadFirstTick = true;
+      this._hasFirstTick = true;
     }
   },
 

@@ -113,8 +113,7 @@ export default class MobileStandardMaterial extends THREE.ShaderMaterial {
     mobileMaterial.emissiveIntensity = material.emissiveIntensity;
     mobileMaterial.emissiveMap = material.emissiveMap;
 
-    // TODO this actually needs to get called whenever any of these material properties change,
-    // when we do look for other usages of isMobileStandardMaterial as they may be doing updates manually
+    // TODO this actually needs to get called whenever any of these material properties change
     mobileMaterial.refreshUniforms();
 
     return mobileMaterial;
