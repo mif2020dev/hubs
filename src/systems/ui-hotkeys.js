@@ -24,7 +24,8 @@ AFRAME.registerSystem("ui-hotkeys", {
     }
 
     if (this.userinput.get(paths.actions.focusChat)) {
-      this.focusChat();
+      //We don't use chat so yeah.
+      //this.focusChat();
     }
 
     if (this.userinput.get(paths.actions.focusChatCommand)) {
