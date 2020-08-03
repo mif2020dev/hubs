@@ -74,8 +74,7 @@ const messageBodyDom = (body, from, fromSessionId, includeFromLink, history) => 
         </div>
       )}
       <div className={classNames(messageBodyClasses)}>
-        <Linkify properties={{ target: "_blank", rel: "noopener referrer" }}>{toEmojis(cleanedBody)}</Linkify>
-      </div>
+        </div>
     </div>
   );
 };
@@ -233,10 +232,10 @@ export default function ChatMessage(props) {
       {props.maySpawn && (
         <button
           className={classNames(styles.iconButton, styles.spawnMessage)}
-          onClick={() => spawnChatMessage(props.body)}
+          onClick={() => spawnChatMessage("props.body")}
         />
       )}
-      {messageBodyDom(props.body, props.name, props.sessionId, props.includeFromLink, props.history)}
+      {messageBodyDom("props.body", props.name, props.sessionId, props.includeFromLink, props.history)}
     </div>
   );
 }
