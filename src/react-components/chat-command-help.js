@@ -16,12 +16,14 @@ export default class ChatCommandHelp extends Component {
       "leave",
       "grow",
       "shrink",
+      /*
       "duck",
       "debug",
       "vrstats",
       "scene <scene url>",
       "rename <new name>",
       "audiomode"
+      */
     ];
 
     if (window.APP.hubChannel && window.APP.hubChannel.can("fly")) {

@@ -84,6 +84,7 @@ export default class MessageDispatch {
         this.entryManager.exitScene();
         this.remountUI({ roomUnavailableReason: "left" });
         break;
+      //Maybe left as hidden command/easter egg?
       case "duck":
         spawnChatMessage(getAbsoluteHref(location.href, ducky));
         if (Math.random() < 0.01) {
@@ -92,6 +93,7 @@ export default class MessageDispatch {
           this.scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_QUACK);
         }
         break;
+      //Better be removed by the beginning. But left for debugging for now.
       case "debug":
         physicsSystem = document.querySelector("a-scene").systems["hubs-systems"].physicsSystem;
         physicsSystem.setDebug(!physicsSystem.debugEnabled);
@@ -99,21 +101,7 @@ export default class MessageDispatch {
       case "vrstats":
         document.getElementById("stats").components["stats-plus"].toggleVRStats();
         break;
-      case "scene":
-        if (args[0]) {
-          if (await isValidSceneUrl(args[0])) {
-            err = this.hubChannel.updateScene(args[0]);
-            if (err === "unauthorized") {
-              this.addToPresenceLog({ type: "log", body: "You do not have permission to change the scene." });
-            }
-          } else {
-            this.addToPresenceLog({ type: "log", body: messages["invalid-scene-url"] });
-          }
-        } else if (this.hubChannel.canOrWillIfCreator("update_hub")) {
-          this.mediaSearchStore.sourceNavigateWithNoNav("scenes", "use");
-        }
-
-        break;
+        
       case "rename":
         err = this.hubChannel.rename(args.join(" "));
         if (err === "unauthorized") {
