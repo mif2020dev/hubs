@@ -243,7 +243,8 @@ export default class HubChannel extends EventTarget {
 
   sendMessage = (body, type = "chat") => {
     if (!body) return;
-    this.channel.push("message", { body, type });
+    /////////////////////////////DISABLED BUT REVERT ON ERROR///////////////////////////////
+    //this.channel.push("message", { body, type });
   };
 
   _getCreatorAssignmentToken = () => {

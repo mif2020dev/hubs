@@ -100,18 +100,7 @@ class InWorldChatBox extends Component {
               e.stopPropagation();
               this.setState({ pendingMessage: e.target.value });
             }}
-            onKeyDown={e => {
-              if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey) {
-                this.sendMessage(e);
-              } else if (e.key === "Enter" && e.ctrlKey) {
-                spawnChatMessage(e.target.value);
-                this.setState({ pendingMessage: "" });
-                e.target.blur();
-              } else if (e.key === "Escape") {
-                e.target.blur();
-              }
-            }}
-            placeholder={this.props.discordBridges.length ? `Send to room and ${discordSnippet}...` : "Send to room..."}
+            placeholder="Chat has been disabled."
           />
           {this.props.enableSpawning && (
             <InlineSVGButton
@@ -128,16 +117,6 @@ class InWorldChatBox extends Component {
               }}
             />
           )}
-          <InlineSVGButton
-            type="submit"
-            title={"Submit"}
-            className={classNames([
-              styles.messageEntryButton,
-              styles.messageEntryButtonInRoom,
-              styles.messageEntrySubmit
-            ])}
-            src={sendMessageIcon}
-          />
         </div>
       </form>
     );
