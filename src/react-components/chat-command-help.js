@@ -13,9 +13,9 @@ export default class ChatCommandHelp extends Component {
 
   render() {
     const commands = [
-      "leave",
-      "grow",
-      "shrink",
+      //"leave",
+      //"grow",
+      //"shrink",
       /*
       "duck",
       "debug",
@@ -27,11 +27,11 @@ export default class ChatCommandHelp extends Component {
     ];
 
     if (window.APP.hubChannel && window.APP.hubChannel.can("fly")) {
-      commands.push("fly");
+      //commands.push("fly");
     }
 
     if (qsTruthy("video_capture")) {
-      commands.push("capture [stop]");
+      //commands.push("capture [stop]");
     }
 
     return (
