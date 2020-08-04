@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import styles from "../assets/stylesheets/message-entry.scss";
 import ChatCommandHelp from "./chat-command-help";
-import sendMessageIcon from "../assets/images/send_message.svgi";
 import spawnMessageIcon from "../assets/images/spawn_message.svgi";
 import { faCamera } from "@fortawesome/free-solid-svg-icons/faCamera";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
@@ -40,7 +39,6 @@ class InWorldChatBox extends Component {
     const textRows = this.state.pendingMessage.split("\n").length;
     const pendingMessageTextareaHeight = textRows * 28 + "px";
     const pendingMessageFieldHeight = textRows * 28 + 20 + "px";
-    const discordSnippet = this.props.discordBridges.map(ch => "#" + ch).join(", ");
 
     return (
       <form onSubmit={this.sendMessage}>

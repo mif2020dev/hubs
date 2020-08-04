@@ -342,9 +342,7 @@ class ConfigurationEditor extends Component {
           >
             {schemaCategories
               .filter(c => this.props.schema[c] && !isEmptyObject(this.props.schema[c]))
-              .map(c => (
-                <Tab label={getCategoryDisplayName(c)} key={c} value={c} />
-              ))}
+              .map(c => <Tab label={getCategoryDisplayName(c)} key={c} value={c} />)}
           </Tabs>
           <TabContainer>
             <Typography variant="body2" gutterBottom>
@@ -375,7 +373,7 @@ class ConfigurationEditor extends Component {
                 <CloseIcon className={this.props.classes.icon} />
               </IconButton>
             ]}
-          ></SnackbarContent>
+          />
         </Snackbar>
       </Card>
     );

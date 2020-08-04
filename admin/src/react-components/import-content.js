@@ -397,19 +397,20 @@ class ImportContentComponent extends Component {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  {hasNonImported && !isImportingAny && (
-                    <Checkbox
-                      indeterminate={numSelected > 0 && numSelected < rowCount}
-                      checked={numSelected === rowCount}
-                      onChange={e => {
-                        for (const { isImported, url } of imports) {
-                          if (!isImported) {
-                            this.setImportIsEnabled(url, e.target.checked);
+                  {hasNonImported &&
+                    !isImportingAny && (
+                      <Checkbox
+                        indeterminate={numSelected > 0 && numSelected < rowCount}
+                        checked={numSelected === rowCount}
+                        onChange={e => {
+                          for (const { isImported, url } of imports) {
+                            if (!isImported) {
+                              this.setImportIsEnabled(url, e.target.checked);
+                            }
                           }
-                        }
-                      }}
-                    />
-                  )}
+                        }}
+                      />
+                    )}
                 </TableCell>
                 <TableCell>Info</TableCell>
                 <TableCell>Preview</TableCell>
@@ -533,25 +534,29 @@ class ImportContentComponent extends Component {
             )}
           </form>
           {this.state.isLoading && <CircularProgress />}
-          {!this.state.isLoading && unimportedCount > 0 && (
-            <div>
-              <p />
-              <Typography variant="subheading" gutterBottom>
-                Next, choose the content you&apos;d like to import, and which content flags to set. Then, click Import.
-              </Typography>
-            </div>
-          )}
+          {!this.state.isLoading &&
+            unimportedCount > 0 && (
+              <div>
+                <p />
+                <Typography variant="subheading" gutterBottom>
+                  Next, choose the content you&apos;d like to import, and which content flags to set. Then, click
+                  Import.
+                </Typography>
+              </div>
+            )}
           {!this.state.isLoading && importCount > 0 && this.renderImportTable()}
-          {!this.state.isLoading && readyToImportCount > 0 && !isImportingAny && (
-            <Button
-              onClick={this.onImport.bind(this)}
-              className={this.props.classes.button}
-              variant="contained"
-              color="primary"
-            >
-              Import {readyToImportCount} Item{readyToImportCount > 1 && "s"}
-            </Button>
-          )}
+          {!this.state.isLoading &&
+            readyToImportCount > 0 &&
+            !isImportingAny && (
+              <Button
+                onClick={this.onImport.bind(this)}
+                className={this.props.classes.button}
+                variant="contained"
+                color="primary"
+              >
+                Import {readyToImportCount} Item{readyToImportCount > 1 && "s"}
+              </Button>
+            )}
           {isImportingAny && <CircularProgress />}
           <Snackbar
             anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
@@ -578,7 +583,7 @@ class ImportContentComponent extends Component {
                   <CloseIcon className={this.props.classes.icon} />
                 </IconButton>
               ]}
-            ></SnackbarContent>
+            />
           </Snackbar>
         </CardContent>
       </Card>

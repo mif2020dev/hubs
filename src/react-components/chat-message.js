@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styles from "../assets/stylesheets/presence-log.scss";
 import classNames from "classnames";
-import Linkify from "react-linkify";
 import { toArray as toEmojis } from "react-emoji-render";
 import serializeElement from "../utils/serialize-element";
 import { navigateToClientInfo } from "./presence-list";
@@ -60,9 +59,6 @@ const messageBodyDom = (body, from, fromSessionId, includeFromLink, history) => 
   if (!multiLine) {
     body = wordWrap(body);
   }
-
-  const cleanedBody = (mono ? body.substring(1, body.length - 1) : body).trim();
-
   return (
     <div className={wrapStyle}>
       {from && (
@@ -73,8 +69,7 @@ const messageBodyDom = (body, from, fromSessionId, includeFromLink, history) => 
           {from}:
         </div>
       )}
-      <div className={classNames(messageBodyClasses)}>
-        </div>
+      <div className={classNames(messageBodyClasses)} />
     </div>
   );
 };

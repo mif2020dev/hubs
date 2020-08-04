@@ -154,8 +154,8 @@ export const AccountList = withStyles(styles)(
             createStatus: isAllSuccess
               ? "Success adding all accounts"
               : hasOneSuccess
-              ? "Success adding some accounts, Errors adding some accounts"
-              : "Errors adding all accounts",
+                ? "Success adding some accounts, Errors adding some accounts"
+                : "Errors adding all accounts",
             createResults: results
           });
         }
@@ -196,7 +196,7 @@ export const AccountList = withStyles(styles)(
                   <Button onClick={this.onCreateAccount.bind(this)}>Create</Button>
                   {this.state.creating && <CircularProgress />}
                   <Snackbar open={this.state.createStatus} autoHideDuration={5000}>
-                    <SnackbarContent message={this.state.createStatus}></SnackbarContent>
+                    <SnackbarContent message={this.state.createStatus} />
                   </Snackbar>
                 </form>
                 {this.state.createResults &&
@@ -229,7 +229,7 @@ export const AccountList = withStyles(styles)(
                   <Button onClick={this.onAccountSearch.bind(this)}>Find</Button>
                   {this.state.searching && <CircularProgress />}
                   <Snackbar open={this.state.searchStatus} autoHideDuration={5000}>
-                    <SnackbarContent message={this.state.searchStatus}></SnackbarContent>
+                    <SnackbarContent message={this.state.searchStatus} />
                   </Snackbar>
                 </form>
               </CardContent>

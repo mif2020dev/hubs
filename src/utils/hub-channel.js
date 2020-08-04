@@ -245,6 +245,7 @@ export default class HubChannel extends EventTarget {
     if (!body) return;
     /////////////////////////////DISABLED BUT REVERT ON ERROR///////////////////////////////
     //this.channel.push("message", { body, type });
+    console.log(type);
   };
 
   _getCreatorAssignmentToken = () => {
