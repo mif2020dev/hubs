@@ -74,7 +74,6 @@ export function HomePage() {
         </div>
         <div className={styles.ctaButtons}>
           {canCreateRooms && <CreateRoomButton />}
-          <PWAButton />
         </div>
       </section>
       {featuredRooms.length > 0 && (
