@@ -1,0 +1,16 @@
+language: node_js
+
+node_js:
+  - 12
+
+cache: npm
+
+before_install:
+  # Since `npm ci` is only available since npm@5.7.0
+  - if [[ $TRAVIS_NODE_VERSION == 8 ]]; then npm i -g npm@latest; fi
+
+script:
+  - npm test
+
+#after_success:
+#  - '[ "$TRAVIS_BRANCH" == mif2020/release ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && bash ./deploy.sh'
