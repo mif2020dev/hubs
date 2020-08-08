@@ -6,7 +6,7 @@ import configs from "../../utils/configs";
 import IfFeature from "../if-feature";
 import { Page } from "../layout/Page";
 import { CreateRoomButton } from "./CreateRoomButton";
-import { PWAButton } from "./PWAButton";
+//import { PWAButton } from "./PWAButton";
 import { useFavoriteRooms } from "./useFavoriteRooms";
 import { usePublicRooms } from "./usePublicRooms";
 import styles from "./HomePage.scss";
@@ -72,10 +72,7 @@ export function HomePage() {
             </div>
           )}
         </div>
-        <div className={styles.ctaButtons}>
-          {canCreateRooms && <CreateRoomButton />}
-          <PWAButton />
-        </div>
+        <div className={styles.ctaButtons}>{canCreateRooms && <CreateRoomButton />}</div>
       </section>
       {featuredRooms.length > 0 && (
         <section className={styles.featuredRooms}>
